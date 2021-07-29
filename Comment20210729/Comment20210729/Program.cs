@@ -35,6 +35,12 @@ namespace Comment20210729
             diagramViewModel.Layers[1].IsSelected.Value = true;
             Console.WriteLine($"{diagramViewModel.SelectedLayers.Count} items");
             Console.WriteLine(string.Join(", ", diagramViewModel.SelectedLayers.Select(x => $"{x.Name.Value.ToString()}[{x.IsSelected.Value}]")));
+
+            Console.WriteLine("set IsSelect={true, false}");
+            diagramViewModel.Layers[0].IsSelected.Value = true;
+            diagramViewModel.Layers[1].IsSelected.Value = false;
+            Console.WriteLine($"{diagramViewModel.SelectedLayers.Count} items");
+            Console.WriteLine(string.Join(", ", diagramViewModel.SelectedLayers.Select(x => $"{x.Name.Value.ToString()}[{x.IsSelected.Value}]")));
         }
     }
 
