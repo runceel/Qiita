@@ -53,15 +53,15 @@ namespace Comment20210729
 
         public DiagramViewModel()
         {
-            //SelectedLayers = Layers.ObserveElementProperty(x => x.IsSelected)
-            //                       .Select(x => x.Instance)
-            //                       .Where(x => x.IsSelected.Value)
-            //                       .ToReadOnlyReactiveCollection(); //not working
-
-            SelectedLayers = Layers.ObserveElementObservableProperty(x => x.IsSelected)
+            SelectedLayers = Layers.ObserveElementProperty(x => x.IsSelected)
                                    .Select(x => x.Instance)
                                    .Where(x => x.IsSelected.Value)
                                    .ToReadOnlyReactiveCollection(); //not working
+
+            //SelectedLayers = Layers.ObserveElementObservableProperty(x => x.IsSelected)
+            //                       .Select(x => x.Instance)
+            //                       .Where(x => x.IsSelected.Value)
+            //                       .ToReadOnlyReactiveCollection(); //not working
         }
     }
 
