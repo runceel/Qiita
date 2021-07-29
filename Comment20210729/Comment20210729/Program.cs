@@ -61,7 +61,7 @@ namespace Comment20210729
             SelectedLayers = Layers.ObserveElementObservableProperty(x => x.IsSelected)
                                    .Select(x => x.Instance)
                                    .Where(x => x.IsSelected.Value)
-                                   .ToReadOnlyReactiveCollection();
+                                   .ToReadOnlyReactiveCollection(); //not working
         }
     }
 
