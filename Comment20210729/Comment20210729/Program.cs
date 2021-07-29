@@ -3,7 +3,9 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 
 namespace Comment20210729
@@ -27,20 +29,20 @@ namespace Comment20210729
             Console.WriteLine("set IsSelect={true, false}");
             diagramViewModel.Layers[0].IsSelected.Value = true;
             diagramViewModel.Layers[1].IsSelected.Value = false;
-            Console.WriteLine($"{diagramViewModel.SelectedLayers.Count} items");
-            Console.WriteLine(string.Join(", ", diagramViewModel.SelectedLayers.Select(x => $"{x.Name.Value.ToString()}[{x.IsSelected.Value}]")));
+            Console.WriteLine($"{diagramViewModel.SelectedLayers.Value.Count()} items");
+            Console.WriteLine(string.Join(", ", diagramViewModel.SelectedLayers.Value.Select(x => $"{x.Name.Value.ToString()}[{x.IsSelected.Value}]")));
 
             Console.WriteLine("set IsSelect={false, true}");
             diagramViewModel.Layers[0].IsSelected.Value = false;
             diagramViewModel.Layers[1].IsSelected.Value = true;
-            Console.WriteLine($"{diagramViewModel.SelectedLayers.Count} items");
-            Console.WriteLine(string.Join(", ", diagramViewModel.SelectedLayers.Select(x => $"{x.Name.Value.ToString()}[{x.IsSelected.Value}]")));
+            Console.WriteLine($"{diagramViewModel.SelectedLayers.Value.Count()} items");
+            Console.WriteLine(string.Join(", ", diagramViewModel.SelectedLayers.Value.Select(x => $"{x.Name.Value.ToString()}[{x.IsSelected.Value}]")));
 
             Console.WriteLine("set IsSelect={true, false}");
             diagramViewModel.Layers[0].IsSelected.Value = true;
             diagramViewModel.Layers[1].IsSelected.Value = false;
-            Console.WriteLine($"{diagramViewModel.SelectedLayers.Count} items");
-            Console.WriteLine(string.Join(", ", diagramViewModel.SelectedLayers.Select(x => $"{x.Name.Value.ToString()}[{x.IsSelected.Value}]")));
+            Console.WriteLine($"{diagramViewModel.SelectedLayers.Value.Count()} items");
+            Console.WriteLine(string.Join(", ", diagramViewModel.SelectedLayers.Value.Select(x => $"{x.Name.Value.ToString()}[{x.IsSelected.Value}]")));
         }
     }
 
@@ -49,19 +51,13 @@ namespace Comment20210729
 
         public ReactiveCollection<Layer> Layers { get; } = new ReactiveCollection<Layer>();
 
-        public ReadOnlyReactiveCollection<Layer> SelectedLayers { get; }
+        public ReadOnlyReactivePropertySlim<Layer[]> SelectedLayers { get; }
 
         public DiagramViewModel()
         {
-            SelectedLayers = Layers.ObserveElementProperty(x => x.IsSelected)
-                                   .Select(x => x.Instance)
-                                   .Where(x => x.IsSelected.Value)
-                                   .ToReadOnlyReactiveCollection(); //not working
-
-            //SelectedLayers = Layers.ObserveElementObservableProperty(x => x.IsSelected)
-            //                       .Select(x => x.Instance)
-            //                       .Where(x => x.IsSelected.Value)
-            //                       .ToReadOnlyReactiveCollection(); //not working
+            SelectedLayers = Layers.ObserveElementObservableProperty(x => x.IsSelected)
+                                   .Select(_ => Layers.Where(x => x.IsSelected.Value == true).ToArray())
+                                   .ToReadOnlyReactivePropertySlim(Array.Empty<Layer>()); //work fine!!!
         }
     }
 
