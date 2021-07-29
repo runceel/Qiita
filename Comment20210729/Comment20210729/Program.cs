@@ -65,12 +65,14 @@ namespace Comment20210729
         }
     }
 
-    class Layer : BindableBase, IObservable<LayerObservable>
+    public class Layer : BindableBase, IObservable<LayerObservable>
     {
 
         public ReactivePropertySlim<bool> IsSelected { get; } = new ReactivePropertySlim<bool>();
 
         public ReactivePropertySlim<string> Name { get; } = new ReactivePropertySlim<string>();
+
+        public ReactiveCollection<LayerItem> Items { get; } = new ReactiveCollection<LayerItem>();
 
         public Layer()
         {
@@ -106,5 +108,39 @@ namespace Comment20210729
 
     public class LayerObservable : BindableBase
     {
+    }
+
+    public class LayerItem : BindableBase
+    {
+        public ReactiveProperty<bool> IsSelected { get; set; }
+        public ReactivePropertySlim<string> Name { get; } = new ReactivePropertySlim<string>();
+        public ReactivePropertySlim<Layer> Owner { get; } = new ReactivePropertySlim<Layer>();
+        public ReactivePropertySlim<SelectableDesignerItemViewModelBase> Item { get; } = new ReactivePropertySlim<SelectableDesignerItemViewModelBase>();
+
+        public LayerItem(SelectableDesignerItemViewModelBase item, Layer owner)
+        {
+            Item.Value = item;
+            Owner.Value = owner;
+            Init();
+        }
+
+        private void Init()
+        {
+            IsSelected = Item.Where(x => x != null)
+                             .Select(x => x.IsSelected.Value)
+                             .ToReactiveProperty();
+            IsSelected.Subscribe(x =>
+            {
+                if (Item.Value != null)
+                {
+                    Item.Value.IsSelected.Value = x;
+                }
+            });
+        }
+    }
+
+    public class SelectableDesignerItemViewModelBase : BindableBase
+    {
+        public ReactivePropertySlim<bool> IsSelected { get; } = new ReactivePropertySlim<bool>();
     }
 }
