@@ -81,6 +81,8 @@ namespace Question20210804
 
         public ReadOnlyReactivePropertySlim<SelectableDesignerItemViewModelBase[]> AllItems { get; }
 
+        public ReadOnlyReactivePropertySlim<SelectableDesignerItemViewModelBase[]> SelectedItems { get; }
+
         public DiagramViewModel()
         {
             AllItems = Layers.CollectionChangedAsObservable()
@@ -91,6 +93,15 @@ namespace Question20210804
                                                 .Select(y => (y as LayerItem).Item.Value)
                                                 .ToArray())
                              .ToReadOnlyReactivePropertySlim(Array.Empty<SelectableDesignerItemViewModelBase>());
+            SelectedItems = Layers.CollectionChangedAsObservable()
+                                  .Select(_ => Layers.Select(x => x.SelectedLayerItemsChangedAsObservable()).Merge())
+                                  .Switch()
+                                  .Select(_ => Layers.SelectRecursive<LayerTreeViewItemBase, LayerTreeViewItemBase>(x => x.Children)
+                                                     .Where(x => x.GetType() == typeof(LayerItem))
+                                                     .Select(y => (y as LayerItem).Item.Value)
+                                                     .Where(z => z.IsSelected.Value == true)
+                                                     .ToArray())
+                                  .ToReadOnlyReactivePropertySlim(Array.Empty<SelectableDesignerItemViewModelBase>());
             SelectedLayers = Layers.ObserveElementObservableProperty(x => x.IsSelected)
                                    .Select(_ => Layers.Where(x => x.IsSelected.Value == true).ToArray())
                                    .ToReadOnlyReactivePropertySlim(Array.Empty<LayerTreeViewItemBase>());
