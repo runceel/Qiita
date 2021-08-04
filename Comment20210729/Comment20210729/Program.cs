@@ -43,6 +43,15 @@ namespace Comment20210729
             diagramViewModel.Layers[1].IsSelected.Value = false;
             Console.WriteLine($"{diagramViewModel.SelectedLayers.Value.Count()} items");
             Console.WriteLine(string.Join(", ", diagramViewModel.SelectedLayers.Value.Select(x => $"{x.Name.Value.ToString()}[{x.IsSelected.Value}]")));
+
+            Console.WriteLine("add LayerItem");
+            var item = new SelectableDesignerItemViewModelBase();
+            var layerItem = new LayerItem(item, diagramViewModel.Layers[0]);
+            diagramViewModel.Layers[0].Items.Add(layerItem);
+            Console.WriteLine("switch IsSelected to true");
+            item.IsSelected.Value = true;
+            Console.WriteLine("switch IsSelected to false");
+            item.IsSelected.Value = false;
         }
     }
 
@@ -111,11 +120,11 @@ namespace Comment20210729
         public ReactiveProperty<bool> IsSelected { get; set; }
         public ReactivePropertySlim<string> Name { get; } = new ReactivePropertySlim<string>();
         public ReactivePropertySlim<Layer> Owner { get; } = new ReactivePropertySlim<Layer>();
-        public ReactivePropertySlim<SelectableDesignerItemViewModelBase> Item { get; } = new ReactivePropertySlim<SelectableDesignerItemViewModelBase>();
+        public ReactivePropertySlim<SelectableDesignerItemViewModelBase> Item { get; }
 
         public LayerItem(SelectableDesignerItemViewModelBase item, Layer owner)
         {
-            Item.Value = item;
+            Item = new ReactivePropertySlim<SelectableDesignerItemViewModelBase>(item);
             Owner.Value = owner;
             Init();
         }
@@ -132,11 +141,56 @@ namespace Comment20210729
                     Item.Value.IsSelected.Value = x;
                 }
             });
+            Item.ObserveProperty(x => x.Value.IsSelected)
+                .Subscribe(x =>
+                {
+                    Console.WriteLine("detected LayerItem.Item changes. run LayerItem.UpdateAppearance().");
+                });
         }
     }
 
-    public class SelectableDesignerItemViewModelBase : BindableBase
+    public class SelectableDesignerItemViewModelBase : BindableBase, IObservable<SelectableDesignerItemViewModelBaseObservable>
     {
         public ReactivePropertySlim<bool> IsSelected { get; } = new ReactivePropertySlim<bool>();
+
+        private List<IObserver<SelectableDesignerItemViewModelBaseObservable>> _observers = new List<IObserver<SelectableDesignerItemViewModelBaseObservable>>();
+
+        public SelectableDesignerItemViewModelBase()
+        {
+            IsSelected.Subscribe();
+        }
+
+        public IDisposable Subscribe(IObserver<SelectableDesignerItemViewModelBaseObservable> observer)
+        {
+            _observers.Add(observer);
+            observer.OnNext(new SelectableDesignerItemViewModelBaseObservable(this));
+            return new SelectableDesignerItemViewModelBaseDisposable(this, observer);
+        }
+
+        public class SelectableDesignerItemViewModelBaseDisposable : IDisposable
+        {
+            private SelectableDesignerItemViewModelBase item;
+            private IObserver<SelectableDesignerItemViewModelBaseObservable> observer;
+
+            public SelectableDesignerItemViewModelBaseDisposable(SelectableDesignerItemViewModelBase item, IObserver<SelectableDesignerItemViewModelBaseObservable> observer)
+            {
+                this.item = item;
+                this.observer = observer;
+            }
+
+            public void Dispose()
+            {
+                item._observers.Remove(observer);
+            }
+        }
+    }
+
+    public class SelectableDesignerItemViewModelBaseObservable : BindableBase
+    {
+        public SelectableDesignerItemViewModelBase Owner { get; }
+        public SelectableDesignerItemViewModelBaseObservable(SelectableDesignerItemViewModelBase owner)
+        {
+            Owner = owner;
+        }
     }
 }
