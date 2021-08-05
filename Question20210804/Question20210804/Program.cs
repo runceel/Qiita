@@ -69,13 +69,7 @@ namespace Question20210804
     {
         public ReactivePropertySlim<LayerTreeViewItemBase> RootLayer { get; set; } = new ReactivePropertySlim<LayerTreeViewItemBase>(new LayerTreeViewItemBase());
 
-        public ReactiveCollection<LayerTreeViewItemBase> Layers
-        {
-            get
-            {
-                return RootLayer.Value.Children;
-            }
-        }
+        public ReactiveCollection<LayerTreeViewItemBase> Layers { get; }
 
         public ReadOnlyReactivePropertySlim<LayerTreeViewItemBase[]> SelectedLayers { get; }
 
@@ -85,6 +79,11 @@ namespace Question20210804
 
         public DiagramViewModel()
         {
+            Layers = RootLayer.Value.Children.CollectionChangedAsObservable()
+                           .Select(_ => RootLayer.Value.LayerChangedAsObservable())
+                           .Switch()
+                           .SelectMany(_ => RootLayer.Value.Children)
+                           .ToReactiveCollection();
             AllItems = Layers.CollectionChangedAsObservable()
                              .Select(_ => Layers.Select(x => x.LayerItemsChangedAsObservable()).Merge())
                              .Switch()
@@ -129,6 +128,11 @@ namespace Question20210804
             var layerItem = new LayerItem(item, this);
             layerItem.Parent.Value = this;
             Children.Add(layerItem);
+        }
+
+        public IObservable<Unit> LayerChangedAsObservable()
+        {
+            return this.Children.CollectionChangedAsObservable().Where(x => x.Action == NotifyCollectionChangedAction.Remove || x.Action == NotifyCollectionChangedAction.Reset).ToUnit();
         }
 
         public IObservable<Unit> LayerItemsChangedAsObservable()
