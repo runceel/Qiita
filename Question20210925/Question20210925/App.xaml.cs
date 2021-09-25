@@ -27,7 +27,7 @@ namespace boilersGraphics
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             var majorMinorBuild = $"{version.Major}.{version.Minor}.{version.Build}";
-            var appnameAndVersion = $"boiler's Graphics {majorMinorBuild}";
+            var appnameAndVersion = $"MINIMALIZED boiler's Graphics {majorMinorBuild}";
             return appnameAndVersion;
         }
     }
