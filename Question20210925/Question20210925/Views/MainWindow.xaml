@@ -1,0 +1,217 @@
+﻿<Window x:Class="boilersGraphics.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:behavior="clr-namespace:boilersGraphics.Views.Behaviors"
+        xmlns:converter="clr-namespace:boilersGraphics.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+        xmlns:helper="clr-namespace:boilersGraphics.Helpers"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:input="clr-namespace:System.Windows.Input;assembly=System"
+        xmlns:local="clr-namespace:boilersGraphics.Views"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:trigger="clr-namespace:boilersGraphics.Views.Triggers"
+        xmlns:usercontrol="clr-namespace:boilersGraphics.UserControls"
+        xmlns:viewmodel="clr-namespace:boilersGraphics.ViewModels"
+        x:Name="MainWindowInstance"
+        Title="{Binding Title.Value}"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        WindowStyle="None"
+        mc:Ignorable="d">
+    <Window.Resources>
+        <converter:StrokeColorConverter x:Key="StrokeColorConverter" />
+        <converter:WindowStateToVisibilityConverter x:Key="WindowStateToVisibilityConverter" />
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding CanExecute="CommandBinding_CanExecute_Close"
+                        Command="{x:Static SystemCommands.CloseWindowCommand}"
+                        Executed="CommandBinding_Executed_Close" />
+        <CommandBinding CanExecute="CommandBinding_CanExecute_Maximize"
+                        Command="{x:Static SystemCommands.MaximizeWindowCommand}"
+                        Executed="CommandBinding_Executed_Maximize" />
+        <CommandBinding CanExecute="CommandBinding_CanExecute_Minimize"
+                        Command="{x:Static SystemCommands.MinimizeWindowCommand}"
+                        Executed="CommandBinding_Executed_Minimize" />
+        <CommandBinding CanExecute="CommandBinding_CanExecute_Restore"
+                        Command="{x:Static SystemCommands.RestoreWindowCommand}"
+                        Executed="CommandBinding_Executed_Restore" />
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="Del" Command="{Binding DeleteSelectedItemsCommand}" />
+        <KeyBinding Key="A"
+                    Command="{Binding DiagramViewModel.SelectAllCommand}"
+                    Modifiers="Ctrl" />
+        <KeyBinding Key="D"
+                    Command="{Binding DiagramViewModel.DuplicateCommand}"
+                    Modifiers="Ctrl" />
+        <KeyBinding Command="{Binding ExitApplicationCommand}" Gesture="Alt+F4" />
+        <KeyBinding Key="S"
+                    Command="{Binding DiagramViewModel.SaveCommand}"
+                    Modifiers="Ctrl+Shift" />
+        <KeyBinding Key="S"
+                    Command="{Binding DiagramViewModel.OverwriteCommand}"
+                    Modifiers="Ctrl" />
+        <KeyBinding Key="E"
+                    Command="{Binding DiagramViewModel.ExportCommand}"
+                    Modifiers="Ctrl" />
+        <KeyBinding Key="X"
+                    Command="{Binding DiagramViewModel.CutCommand}"
+                    Modifiers="Ctrl" />
+        <KeyBinding Key="C"
+                    Command="{Binding DiagramViewModel.CopyCommand}"
+                    Modifiers="Ctrl" />
+        <KeyBinding Key="V"
+                    Command="{Binding DiagramViewModel.PasteCommand}"
+                    Modifiers="Ctrl" />
+        <KeyBinding Key="Z"
+                    Command="{Binding DiagramViewModel.UndoCommand}"
+                    Modifiers="Ctrl" />
+        <KeyBinding Key="Y"
+                    Command="{Binding DiagramViewModel.RedoCommand}"
+                    Modifiers="Ctrl" />
+    </Window.InputBindings>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="{x:Static SystemParameters.CaptionHeight}"
+                      ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"
+                      UseAeroCaptionButtons="True" />
+    </WindowChrome.WindowChrome>
+    <Window.Template>
+        <ControlTemplate TargetType="Window">
+            <Border x:Name="border"
+                    Background="#ffffff"
+                    BorderBrush="#cccccc"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <DockPanel Grid.Row="0">
+                        <DockPanel.Resources>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Background" Value="White" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Height" Value="26" />
+                                <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+                            </Style>
+                            <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
+                                <Setter Property="Background" Value="White" />
+                                <Setter Property="BorderBrush" Value="White" />
+                            </Style>
+                        </DockPanel.Resources>
+                        <StackPanel HorizontalAlignment="Right"
+                                    VerticalAlignment="Stretch"
+                                    DockPanel.Dock="Right"
+                                    Orientation="Horizontal">
+                            <Button Command="{x:Static SystemCommands.MinimizeWindowCommand}"
+                                    Content="0"
+                                    Foreground="Gray"
+                                    Style="{DynamicResource CaptionButtonStyleKey}">
+                                <Button.ToolTip>
+                                    <ToolTip FontFamily="メイリオ">
+                                        <TextBlock Text="最小化" />
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>
+                            <Button Command="{x:Static SystemCommands.MaximizeWindowCommand}"
+                                    Content="1"
+                                    Foreground="Gray"
+                                    Style="{DynamicResource CaptionButtonStyleKey}"
+                                    Visibility="{Binding ElementName=MainWindowInstance, Path=WindowState, Converter={StaticResource WindowStateToVisibilityConverter}, ConverterParameter=最大化}">
+                                <Button.ToolTip>
+                                    <ToolTip FontFamily="メイリオ">
+                                        <TextBlock Text="最大化" />
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>
+                            <Button Command="{x:Static SystemCommands.RestoreWindowCommand}"
+                                    Content="2"
+                                    Foreground="Gray"
+                                    Style="{DynamicResource CaptionButtonStyleKey}"
+                                    Visibility="{Binding ElementName=MainWindowInstance, Path=WindowState, Converter={StaticResource WindowStateToVisibilityConverter}, ConverterParameter=元に戻す}">
+                                <Button.ToolTip>
+                                    <ToolTip FontFamily="メイリオ">
+                                        <TextBlock Text="元に戻す(縮小)" />
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>
+                            <Button Command="{x:Static SystemCommands.CloseWindowCommand}"
+                                    Content="r"
+                                    Foreground="Gray"
+                                    Style="{DynamicResource CaptionButtonStyleKey}">
+                                <Button.ToolTip>
+                                    <ToolTip FontFamily="メイリオ">
+                                        <TextBlock Text="閉じる" />
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>
+                        </StackPanel>
+                        <TextBlock Margin="5,0,0,0"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   DockPanel.Dock="Right"
+                                   Text="{Binding Title.Value}" />
+                    </DockPanel>
+                    <Grid Grid.Row="1">
+                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                    </Grid>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="WindowState" Value="Maximized">
+                    <Setter TargetName="border" Property="BorderThickness" Value="8" />
+                </Trigger>
+                <Trigger Property="WindowState" Value="Normal">
+                    <Setter TargetName="border" Property="BorderThickness" Value="1" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Window.Template>
+    <DockPanel>
+        <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
+            <ToolBar ItemsSource="{Binding ToolBarViewModel.ToolItems}">
+                <ToolBar.ItemTemplate>
+                    <DataTemplate>
+                        <ToggleButton Width="40"
+                                      Height="40"
+                                      Padding="3"
+                                      Command="{Binding Command}"
+                                      IsChecked="{Binding IsChecked}">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding ImageUrl}" />
+                        </ToggleButton>
+                    </DataTemplate>
+                </ToolBar.ItemTemplate>
+            </ToolBar>
+        </ToolBarTray>
+
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Width="80">
+                    <Run>(</Run>
+                    <Run Text="{Binding DiagramViewModel.CurrentPoint.X, StringFormat=##0.##}" />
+                    <Run xml:space="preserve" Text=",&#x09;" />
+                    <Run Text="{Binding DiagramViewModel.CurrentPoint.Y, StringFormat=##0.##}" />
+                    <Run>)</Run>
+                </TextBlock>
+            </StatusBarItem>
+            <Separator />
+            <StatusBarItem>
+                <TextBlock Width="100" TextAlignment="Center">
+                    <Run Text="{Binding CurrentOperation.Value}" />
+                </TextBlock>
+            </StatusBarItem>
+            <Separator />
+            <StatusBarItem>
+                <TextBlock Width="Auto" TextAlignment="Left">
+                    <Run Text="{Binding Details.Value}" />
+                </TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+
+        <!--  Diagram Control  -->
+        <usercontrol:DiagramControl x:Name="DiagramControl"
+                                    Margin="3,1,0,0"
+                                    DataContext="{Binding DiagramViewModel}" />
+    </DockPanel>
+</Window>
