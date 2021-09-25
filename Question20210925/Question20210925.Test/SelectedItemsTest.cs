@@ -1,11 +1,7 @@
 ﻿using boilersGraphics.Models;
 using boilersGraphics.ViewModels;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Question20210925.Test
