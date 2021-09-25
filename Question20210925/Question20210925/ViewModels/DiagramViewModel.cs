@@ -4,7 +4,6 @@ using boilersGraphics.Helpers;
 using boilersGraphics.Messenger;
 using boilersGraphics.Models;
 using boilersGraphics.UserControls;
-using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -15,7 +14,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -23,9 +21,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Xml;
-using System.Xml.Linq;
 using TsOperationHistory.Extensions;
 
 namespace boilersGraphics.ViewModels

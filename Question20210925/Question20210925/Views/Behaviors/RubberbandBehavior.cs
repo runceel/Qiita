@@ -1,16 +1,11 @@
 ﻿using boilersGraphics.Adorners;
 using boilersGraphics.Controls;
 using boilersGraphics.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Xaml.Behaviors;
+using Question20210925;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Microsoft.Xaml.Behaviors;
-using Question20210925;
 
 namespace boilersGraphics.Views.Behaviors
 {

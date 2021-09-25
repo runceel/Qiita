@@ -2,7 +2,6 @@
 using boilersGraphics.Extensions;
 using boilersGraphics.Helpers;
 using boilersGraphics.ViewModels;
-using boilersGraphics.Views;
 using Prism.Mvvm;
 using Question20210925;
 using Reactive.Bindings;
@@ -18,7 +17,6 @@ using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Threading;
 using TsOperationHistory;
 using TsOperationHistory.Extensions;
 

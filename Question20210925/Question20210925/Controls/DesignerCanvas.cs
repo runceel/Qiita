@@ -4,13 +4,9 @@ using boilersGraphics.Messenger;
 using boilersGraphics.ViewModels;
 using Question20210925;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace boilersGraphics.Controls
 {

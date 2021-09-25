@@ -1,11 +1,7 @@
 ﻿using boilersGraphics.Models;
-using boilersGraphics.ViewModels;
 using Reactive.Bindings;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TsOperationHistory;
 using TsOperationHistory.Extensions;
 

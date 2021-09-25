@@ -1,5 +1,4 @@
-﻿using boilersGraphics.Controls;
-using boilersGraphics.Helpers;
+﻿using boilersGraphics.Helpers;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;

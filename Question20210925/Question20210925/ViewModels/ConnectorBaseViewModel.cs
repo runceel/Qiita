@@ -1,14 +1,11 @@
-﻿using boilersGraphics.Controls;
-using boilersGraphics.Helpers;
+﻿using boilersGraphics.Helpers;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
-using System.Windows.Media;
 
 namespace boilersGraphics.ViewModels
 {

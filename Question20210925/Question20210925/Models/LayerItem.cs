@@ -2,10 +2,6 @@
 using boilersGraphics.Extensions;
 using boilersGraphics.Helpers;
 using boilersGraphics.ViewModels;
-using boilersGraphics.Views;
-using Prism.Ioc;
-using Prism.Services.Dialogs;
-using Prism.Unity;
 using Question20210925;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;

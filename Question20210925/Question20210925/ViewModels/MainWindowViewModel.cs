@@ -1,6 +1,4 @@
-﻿using boilersGraphics.Helpers;
-using boilersGraphics.Views;
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using Question20210925;
