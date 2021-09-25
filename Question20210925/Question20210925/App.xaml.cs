@@ -4,7 +4,7 @@ using Prism.Unity;
 using System.Reflection;
 using System.Windows;
 
-namespace Question20210925
+namespace boilersGraphics
 {
     /// <summary>
     /// App.xaml の相互作用ロジック
@@ -31,9 +31,4 @@ namespace Question20210925
             return appnameAndVersion;
         }
     }
-}
-
-namespace boilersGraphics
-{
-
 }
